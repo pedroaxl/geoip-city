@@ -9,14 +9,14 @@
 #include <GeoIPCity.h>
 
 static VALUE cDB;
-static VALUE rb_geoip_memory; 
-static VALUE rb_geoip_filesystem; 
-static VALUE rb_geoip_index; 
- 
-/* The first argument is the filename of the GeoIPCity.dat file 
+static VALUE rb_geoip_memory;
+static VALUE rb_geoip_filesystem;
+static VALUE rb_geoip_index;
+
+/* The first argument is the filename of the GeoIPCity.dat file
  * load_option = :standard, :index, or :memory. default :memory
  * check_cache = true or false. default false
- * 
+ *
  * filesystem: read database from filesystem, uses least memory.
  *
  * index: the most frequently accessed index portion of the database,
@@ -52,14 +52,14 @@ static VALUE rb_geoip_new(int argc, VALUE *argv, VALUE self)
   }
 
   if(RTEST(check_cache)) flag |= GEOIP_CHECK_CACHE;
-  
+
   if(gi = GeoIP_open(StringValuePtr(filename), flag)) {
     database = Data_Wrap_Struct(cDB, 0, GeoIP_delete, gi);
     rb_obj_call_init(database, 0, 0);
-  } else { 
+  } else {
     rb_sys_fail("Problem opening database");
   }
-  return database; 
+  return database;
 }
 
 /* helper  */
@@ -67,7 +67,7 @@ void rb_hash_sset(VALUE hash, const char *str, VALUE v) {
   rb_hash_aset(hash, ID2SYM(rb_intern(str)), v);
 }
 
-VALUE rb_record_to_hash (GeoIPRecord *record) 
+VALUE rb_record_to_hash (GeoIPRecord *record)
 {
   VALUE hash = rb_hash_new();
 
@@ -91,28 +91,28 @@ VALUE rb_record_to_hash (GeoIPRecord *record)
     rb_hash_sset(hash, "dma_code", INT2NUM(record->dma_code));
   if(record->area_code)
     rb_hash_sset(hash, "area_code", INT2NUM(record->area_code));
-  
+
   return hash;
 }
 
 /* Pass this function an IP address as a string, it will return a hash
  * containing all the information that the database knows about the IP
- *    db.look_up('24.24.24.24') 
- *    => {:city=>"Ithaca", :latitude=>42.4277992248535, 
- *        :country_code=>"US", :longitude=>-76.4981994628906, 
- *        :country_code3=>"USA", :dma_code=>555, 
- *        :country_name=>"United States", :area_code=>607, 
- *        :region=>"NY"} 
- */ 
+ *    db.look_up('24.24.24.24')
+ *    => {:city=>"Ithaca", :latitude=>42.4277992248535,
+ *        :country_code=>"US", :longitude=>-76.4981994628906,
+ *        :country_code3=>"USA", :dma_code=>555,
+ *        :country_name=>"United States", :area_code=>607,
+ *        :region=>"NY"}
+ */
 VALUE rb_geoip_look_up(VALUE self, VALUE addr) {
   GeoIP *gi;
   GeoIPRecord *record = NULL;
-  VALUE hash = Qnil; 
-  
+  VALUE hash = Qnil;
+
   Check_Type(addr, T_STRING);
   Data_Get_Struct(self, GeoIP, gi);
   if(record = GeoIP_record_by_addr(gi, StringValuePtr(addr))) {
-    hash =  rb_record_to_hash(record); 
+    hash =  rb_record_to_hash(record);
     GeoIPRecord_delete(record);
   }
   return hash;
@@ -122,9 +122,9 @@ void Init_geoip_city ()
 {
   VALUE mGeoIP = rb_define_module("GeoIPCity");
 
-  rb_geoip_memory = ID2SYM(rb_intern("memory")); 
-  rb_geoip_filesystem = ID2SYM(rb_intern("filesystem")); 
-  rb_geoip_index = ID2SYM(rb_intern("index")); 
+  rb_geoip_memory = ID2SYM(rb_intern("memory"));
+  rb_geoip_filesystem = ID2SYM(rb_intern("filesystem"));
+  rb_geoip_index = ID2SYM(rb_intern("index"));
 
   cDB = rb_define_class_under(mGeoIP, "Database", rb_cObject);
   rb_define_singleton_method(cDB, "new", rb_geoip_new, -1);
