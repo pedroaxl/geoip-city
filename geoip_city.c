@@ -18,6 +18,16 @@ static VALUE rb_geoip_memory;
 static VALUE rb_geoip_filesystem;
 static VALUE rb_geoip_index;
 
+#ifdef HAVE_RUBY_ENCODING_H
+#define ASSOCIATE_ENCODING(str) \
+  rb_enc_associate(str, utf8Encoding);  \
+  if (default_internal_enc) { \
+    str = rb_str_export_to_enc(str, default_internal_enc); \
+  }
+#else
+#define ASSOCIATE_ENCODING(str)
+#endif
+
 /* The first argument is the filename of the GeoIPCity.dat file
  * load_option = :standard, :index, or :memory. default :memory
  * check_cache = true or false. default false
@@ -81,67 +91,37 @@ VALUE rb_record_to_hash (GeoIPRecord *record)
 
   if(record->country_code) {
     VALUE str = rb_str_new2(record->country_code);
-#ifdef HAVE_RUBY_ENCODING_H
-    rb_enc_associate(str, utf8Encoding);
-    if (default_internal_enc) {
-      str = rb_str_export_to_enc(str, default_internal_enc);
-    }
-#endif
+    ASSOCIATE_ENCODING(str);
     rb_hash_sset(hash, "country_code", str);
   }
 
   if(record->country_code3) {
     VALUE str = rb_str_new2(record->country_code3);
-#ifdef HAVE_RUBY_ENCODING_H
-    rb_enc_associate(str, utf8Encoding);
-    if (default_internal_enc) {
-      str = rb_str_export_to_enc(str, default_internal_enc);
-    }
-#endif
+    ASSOCIATE_ENCODING(str);
     rb_hash_sset(hash, "country_code3", str);
   }
 
   if(record->country_name) {
     VALUE str = rb_str_new2(record->country_name);
-#ifdef HAVE_RUBY_ENCODING_H
-    rb_enc_associate(str, utf8Encoding);
-    if (default_internal_enc) {
-      str = rb_str_export_to_enc(str, default_internal_enc);
-    }
-#endif
+    ASSOCIATE_ENCODING(str);
     rb_hash_sset(hash, "country_name", str);
   }
 
   if(record->region) {
     VALUE str = rb_str_new2(record->region);
-#ifdef HAVE_RUBY_ENCODING_H
-    rb_enc_associate(str, utf8Encoding);
-    if (default_internal_enc) {
-      str = rb_str_export_to_enc(str, default_internal_enc);
-    }
-#endif
+    ASSOCIATE_ENCODING(str);
     rb_hash_sset(hash, "region", str);
   }
 
   if(record->city) {
     VALUE str = rb_str_new2(record->city);
-#ifdef HAVE_RUBY_ENCODING_H
-    rb_enc_associate(str, utf8Encoding);
-    if (default_internal_enc) {
-      str = rb_str_export_to_enc(str, default_internal_enc);
-    }
-#endif
+    ASSOCIATE_ENCODING(str);
     rb_hash_sset(hash, "city", str);
   }
 
   if(record->postal_code)  {
     VALUE str = rb_str_new2(record->city);
-#ifdef HAVE_RUBY_ENCODING_H
-    rb_enc_associate(str, utf8Encoding);
-    if (default_internal_enc) {
-      str = rb_str_export_to_enc(str, default_internal_enc);
-    }
-#endif
+    ASSOCIATE_ENCODING(str);
     rb_hash_sset(hash, "postal_code", rb_str_new2(record->postal_code));
   }
 
