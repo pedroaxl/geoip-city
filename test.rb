@@ -3,19 +3,19 @@ require File.dirname(__FILE__) + '/geoip_city'
 require 'rubygems'
 
 class GeoIPTest < Test::Unit::TestCase
-  
+
   def setup
     @dbfile = ENV['GEOIP_DB'] || 'GeoIPCity.dat'
   end
-  
-  
+
+
   def test_construction_default
     db = GeoIPCity::Database.new(@dbfile)
-    
-    assert_raises TypeError do 
-      db.look_up(nil) 
+
+    assert_raises TypeError do
+      db.look_up(nil)
     end
-    
+
     h = db.look_up('24.24.24.24')
 
     assert_kind_of Hash, h
@@ -52,5 +52,5 @@ class GeoIPTest < Test::Unit::TestCase
       GeoIPCity::Database.new('/blah')
     end
   end
-  
+
 end

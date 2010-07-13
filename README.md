@@ -10,27 +10,27 @@ information (like city, country, latitude, and longitude).
 
 Actually this is only a Ruby binding to a C library which provides this
 function. Also, you must download a large binary database with all this
-mapping information. It is kindly provided free of charge by MaxMind.com. 
+mapping information. It is kindly provided free of charge by MaxMind.com.
 
 Usage
 
     require 'geoip_city'
     db = GeoIPCity::Database.new('/opt/GeoIP/share/GeoIP/GeoLiteCity.dat')
     result = db.look_up('24.24.24.24')
-    p result 
-    # => {:city=>"Ithaca", 
-    #     :latitude=>42.4277992248535, 
-    #     :longitude=>-76.4981994628906, 
-    #     :country_code3=>"USA", 
+    p result
+    # => {:city=>"Ithaca",
+    #     :latitude=>42.4277992248535,
+    #     :longitude=>-76.4981994628906,
+    #     :country_code3=>"USA",
     #     :country_code=>"US",
-    #     :country_name=>"United States", 
+    #     :country_name=>"United States",
     #     :dma_code=>555,
-    #     :area_code=>607, 
+    #     :area_code=>607,
     #     :region=>"NY" }
 
 There are arguments to database initializer.
 
-  1. The first argument is the filename of the GeoIPCity.dat file 
+  1. The first argument is the filename of the GeoIPCity.dat file
 
   2. The second argument (optional) is to specify how GeoIP should
      keep the database in memory. There are three possibilities
@@ -47,7 +47,7 @@ There are arguments to database initializer.
      reload the database if changes are made to the dat file. (You probably
      don't need this. Default: false.)
 
-For example 
+For example
 
     GeoIPCity::Database.new(dbfile, :filesystem, true)
 
@@ -61,7 +61,7 @@ Some variation of the following should work.
   [maxmind](http://www.maxmind.com/app/c).
   For example, I like to install mine in `/opt/GeoIP`, so I do this:
 
-       tar -zxvf GeoIP-1.4.3.tar.gz 
+       tar -zxvf GeoIP-1.4.3.tar.gz
 
        cd GeoIP-1.4.3
 
@@ -69,13 +69,13 @@ Some variation of the following should work.
 
        make && sudo make install
 
-  2. Now install the `geoip_city` gem 
+  2. Now install the `geoip_city` gem
 
        sudo gem install geoip_city -- --with-geoip-dir=/opt/GeoIP
 
   3. Download the GeoLite City database file in binary format at http://www.maxmind.com/app/geolitecity
-     Maybe this [direct link](http://www.maxmind.com/download/geoip/database/GeoLiteCity.dat.gz) will work. 
-     I put this file in 
+     Maybe this [direct link](http://www.maxmind.com/download/geoip/database/GeoLiteCity.dat.gz) will work.
+     I put this file in
 
        /opt/GeoIP/share/GeoIP/GeoLiteCity.dat
 
@@ -101,7 +101,7 @@ Links
 
 [git repo](https://github.com/ry/geoip-city/tree)
 
-License 
+License
 -------
 Copyright (C) 2007--2009 Ryan Dahl (ry@tinyclouds.org)
 
