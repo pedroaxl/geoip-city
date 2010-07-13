@@ -8,6 +8,11 @@
 #include <GeoIP.h>
 #include <GeoIPCity.h>
 
+#ifdef HAVE_RUBY_ENCODING_H
+#include <ruby/encoding.h>
+static rb_encoding *utf8Encoding;
+#endif
+
 static VALUE cDB;
 static VALUE rb_geoip_memory;
 static VALUE rb_geoip_filesystem;
@@ -70,19 +75,76 @@ void rb_hash_sset(VALUE hash, const char *str, VALUE v) {
 VALUE rb_record_to_hash (GeoIPRecord *record)
 {
   VALUE hash = rb_hash_new();
+#ifdef HAVE_RUBY_ENCODING_H
+  rb_encoding *default_internal_enc = rb_default_internal_encoding();
+#endif
 
-  if(record->country_code)
-    rb_hash_sset(hash, "country_code", rb_str_new2(record->country_code));
-  if(record->country_code3)
-    rb_hash_sset(hash, "country_code3", rb_str_new2(record->country_code3));
-  if(record->country_name)
-    rb_hash_sset(hash, "country_name", rb_str_new2(record->country_name));
-  if(record->region)
-    rb_hash_sset(hash, "region", rb_str_new2(record->region));
-  if(record->city)
-    rb_hash_sset(hash, "city", rb_str_new2(record->city));
-  if(record->postal_code)
+  if(record->country_code) {
+    VALUE str = rb_str_new2(record->country_code);
+#ifdef HAVE_RUBY_ENCODING_H
+    rb_enc_associate(str, utf8Encoding);
+    if (default_internal_enc) {
+      str = rb_str_export_to_enc(str, default_internal_enc);
+    }
+#endif
+    rb_hash_sset(hash, "country_code", str);
+  }
+
+  if(record->country_code3) {
+    VALUE str = rb_str_new2(record->country_code3);
+#ifdef HAVE_RUBY_ENCODING_H
+    rb_enc_associate(str, utf8Encoding);
+    if (default_internal_enc) {
+      str = rb_str_export_to_enc(str, default_internal_enc);
+    }
+#endif
+    rb_hash_sset(hash, "country_code3", str);
+  }
+
+  if(record->country_name) {
+    VALUE str = rb_str_new2(record->country_name);
+#ifdef HAVE_RUBY_ENCODING_H
+    rb_enc_associate(str, utf8Encoding);
+    if (default_internal_enc) {
+      str = rb_str_export_to_enc(str, default_internal_enc);
+    }
+#endif
+    rb_hash_sset(hash, "country_name", str);
+  }
+
+  if(record->region) {
+    VALUE str = rb_str_new2(record->region);
+#ifdef HAVE_RUBY_ENCODING_H
+    rb_enc_associate(str, utf8Encoding);
+    if (default_internal_enc) {
+      str = rb_str_export_to_enc(str, default_internal_enc);
+    }
+#endif
+    rb_hash_sset(hash, "region", str);
+  }
+
+  if(record->city) {
+    VALUE str = rb_str_new2(record->city);
+#ifdef HAVE_RUBY_ENCODING_H
+    rb_enc_associate(str, utf8Encoding);
+    if (default_internal_enc) {
+      str = rb_str_export_to_enc(str, default_internal_enc);
+    }
+#endif
+    rb_hash_sset(hash, "city", str);
+  }
+
+  if(record->postal_code)  {
+    VALUE str = rb_str_new2(record->city);
+#ifdef HAVE_RUBY_ENCODING_H
+    rb_enc_associate(str, utf8Encoding);
+    if (default_internal_enc) {
+      str = rb_str_export_to_enc(str, default_internal_enc);
+    }
+#endif
     rb_hash_sset(hash, "postal_code", rb_str_new2(record->postal_code));
+  }
+
   if(record->latitude)
     rb_hash_sset(hash, "latitude", rb_float_new((double)record->latitude));
   if(record->longitude)
@@ -129,4 +191,8 @@ void Init_geoip_city ()
   cDB = rb_define_class_under(mGeoIP, "Database", rb_cObject);
   rb_define_singleton_method(cDB, "new", rb_geoip_new, -1);
   rb_define_method(cDB, "look_up", rb_geoip_look_up, 1);
+
+#ifdef HAVE_RUBY_ENCODING_H
+  utf8Encoding = rb_utf8_encoding();
+#endif
 }
