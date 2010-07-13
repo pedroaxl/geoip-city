@@ -53,4 +53,18 @@ class GeoIPTest < Test::Unit::TestCase
     end
   end
 
+  if defined? Encoding
+    def test_string_encoding_support
+      Encoding.default_internal = nil
+      db = GeoIPCity::Database.new(@dbfile, :index)
+      h = db.look_up('24.24.24.24')
+      assert_equal Encoding.find('utf-8'), h[:city].encoding
+
+      Encoding.default_internal = Encoding.find('us-ascii')
+      db2 = GeoIPCity::Database.new(@dbfile, :index)
+      h2 = db2.look_up('24.24.24.24')
+      assert_equal Encoding.find('us-ascii'), h2[:city].encoding
+    end
+  end
+
 end
