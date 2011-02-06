@@ -5,9 +5,8 @@ require 'rubygems'
 class GeoIPTest < Test::Unit::TestCase
 
   def setup
-    @dbfile = ENV['GEOIP_DB'] || 'GeoIPCity.dat'
+    @dbfile = ENV['GEOIP_DB'] || 'GeoLiteCity.dat'
   end
-
 
   def test_construction_default
     db = GeoIPCity::Database.new(@dbfile)
