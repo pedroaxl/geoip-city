@@ -12,7 +12,8 @@ module GeoIPCity
     def look_up ip
       raise TypeError unless ip
 #puts "/opt/GeoIP/bin/geoiplookup -f #{@dat_path} #{ip}"
-      result = `/opt/GeoIP/bin/geoiplookup -f #{@dat_path} #{ip}`
+      path = `which geoiplookup`
+      result = `#{path} -f #{@dat_path} #{ip}`
       #raise result
       # GeoIP City Edition, Rev 1: US, NY, Syracuse, N/A, 43.051399, -76.149498, 555, 315
       country_code, region, city, lat, lng = result.scan(/: (.+?), (.+?), (.+?), .+?, (-?\d{1,3}.\d+), (-?\d{1,3}.\d+), \d+/).first
